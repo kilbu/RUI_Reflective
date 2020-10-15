@@ -116,4 +116,5 @@ server <- function(input, output) {
   }, height = 600)
 }
 # Run the application 
-shinyApp(ui = ui, server = server)
+app <- shinyApp(ui = ui, server = server)
+runApp(app)
