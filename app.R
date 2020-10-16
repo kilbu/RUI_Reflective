@@ -42,11 +42,11 @@ plot_complexity_data <- function(x){
   
   whole_plot <- centroidPlot +
     geom_line(aes(x = elapsedTime, y = angle/25, group=taskNumber, color = "Rotation Inaccuracy"), size = 1) +
-    scale_y_continuous(name = "Distance in meters (feet)", 
+    scale_y_continuous(name = "Distance (Scene Units)", 
                        limits = c(0, 11), 
                        breaks = 0:10,
-                       labels = paste0(0:10, " m\n(", round((0:10)*3.281, 1), " ft.)"),
-                       sec.axis = sec_axis(~.*25, name = 'Rotation Inaccuracy in degrees', breaks = seq(0, 300, by = 50))) +
+                       labels = paste0(0:10),
+                       sec.axis = sec_axis(~.*25, name = 'Rotation Inaccuracy (Degrees)', breaks = seq(0, 300, by = 50))) +
     scale_x_continuous(breaks = round(seq(from = min(subject_data$elapsedTime), to = max(subject_data$elapsedTime), length.out = 10)),
                        labels = minutes_seconds(seconds_to_period(round(seq(from = min(subject_data$elapsedTime), to = max(subject_data$elapsedTime), length.out = 10))))) +
     coord_cartesian(clip='off') +
