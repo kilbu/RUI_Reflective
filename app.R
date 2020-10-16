@@ -5,6 +5,7 @@ library(ggplot2)
 library(data.table)
 library(dplyr)
 library(grid)
+library(lubridate)
 
 false_buzzer_cleaner <- function(x){
   subject_data_cleaned <- x
@@ -21,6 +22,12 @@ false_buzzer_cleaner <- function(x){
   return(subject_data_cleaned)
 }
 
+minutes_seconds <- function (x){
+  x <- gsub("M ", ":", x)
+  x <- gsub("S", "", x)
+  return(x)
+}
+
 plot_complexity_data <- function(x){
   
   subject_data <- x
@@ -35,13 +42,17 @@ plot_complexity_data <- function(x){
   
   whole_plot <- centroidPlot +
     geom_line(aes(x = elapsedTime, y = angle/25, group=taskNumber, color = "Rotation Inaccuracy"), size = 1) +
-    scale_y_continuous(name = "Distance", sec.axis = sec_axis(~.*25, name = 'Rotation Inaccuracy (Degrees)')) +
-    scale_x_continuous(breaks = round(seq(min(subject_data$elapsedTime), by = 100, length.out = max(subject_data$elapsedTime)))) +
+    scale_y_continuous(name = "Distance in meters (feet)", 
+                       limits = c(0, 11), 
+                       breaks = 0:10,
+                       labels = paste0(0:10, " m\n(", round((0:10)*3.281, 1), " ft.)"),
+                       sec.axis = sec_axis(~.*25, name = 'Rotation Inaccuracy in degrees', breaks = seq(0, 300, by = 50))) +
+    scale_x_continuous(breaks = round(seq(from = min(subject_data$elapsedTime), to = max(subject_data$elapsedTime), length.out = 10)),
+                       labels = minutes_seconds(seconds_to_period(round(seq(from = min(subject_data$elapsedTime), to = max(subject_data$elapsedTime), length.out = 10))))) +
     coord_cartesian(clip='off') +
     labs(title = "Accuracy Statistics ", 
-         x = "Time (seconds) ",
+         x = "Time (Minutes:Seconds) ",
          color = "Legend: ") +
-    
     theme(axis.title.x = element_text(margin=margin(54,0,0,0)),
           axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0)),
           legend.position = "bottom",
@@ -57,8 +68,8 @@ plot_complexity_data <- function(x){
       #ymin = -((max(subject_data$distance)/4) +1), ymax = -(max(subject_data$distance)/4)) +
       ymin = -1.3, ymax = -2.3) +
       geom_vline(xintercept = subject_data$elapsedTime[which(subject_data$taskNumber == unique(subject_data$taskNumber)[i])][length(subject_data$elapsedTime[which(subject_data$taskNumber == unique(subject_data$taskNumber)[i])])],
-                 linetype="dotted", 
-                 size=0.5)
+                 linetype="dotdash", 
+                 size=0.7)
   }
   return(whole_plot)
 }
