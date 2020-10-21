@@ -57,13 +57,8 @@ plot_complexity_data <- function(x){
           axis.title.y = element_text(margin = margin(t = 0, r = 20, b = 0, l = 0)),
           legend.position = "bottom",
           legend.text = element_text(size=15),
-          legend.title = element_text(size=15, face="bold")) 
-    # annotation_custom(
-    #   textGrob(
-    #     label=paste0("* The kidney in this experiment is ~5 scene units tall"), gp=gpar(fontsize=8, fontface = "italic")),
-    #   xmin = 1, 
-    #   xmax = 100,
-    #   ymin = -5, ymax = -5.3)
+          legend.title = element_text(size=15, face="bold"),
+          text = element_text(size=15)) 
   
   for (i in 1:length(unique(subject_data$taskNumber))) {
     whole_plot <- whole_plot + annotation_custom(
@@ -98,7 +93,12 @@ ui <- fluidPage(
   ),
   
   fluidRow(
-    textOutput("kidneysize")
+    column(1),
+    
+    column(4, offset = 1,
+           h4("* The kidney in this experiment is ~5 scene units tall")
+    )
+    #textOutput("kidneysize")
   ),
   
   fluidRow(
@@ -136,9 +136,9 @@ server <- function(input, output) {
     plot_complexity_data(fread(file$datapath))
   }, height = 600)
   
-  output$kidneysize <- renderText({
-    "     * The kidney in this experiment is ~5 scene units tall"
-  })
+  #output$kidneysize <- renderText({
+  #  "     * The kidney in this experiment is ~5 scene units tall"
+  #})
 }
 # Run the application 
 shinyApp(ui = ui, server = server)
